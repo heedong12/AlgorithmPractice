@@ -9,11 +9,9 @@ function solution(s, skip, index) {
 
   for (let i = 0; i < s.length; i++) {
     let n = arr.indexOf(s[i].charCodeAt() - 96);
-      if(n+index >= arr.length){
-          n=(n+index)%arr.length;
-      }else{
-          n=n+index;
-      }
+
+             n=(n+index)%arr.length;
+
     answer += String.fromCharCode(arr[n] + 96);
   }
   return answer;
