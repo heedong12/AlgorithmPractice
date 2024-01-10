@@ -3,8 +3,6 @@ function solution(n, left, right) {
     
     let s_row = Math.floor(left/n+1);
     let s_col = left%n+1;
-    //let e_row = right/n+1;
-    //let e_col = right%n+1;
     
     for(let i=0;i<right-left+1;i++){
         if(s_row>=s_col){
