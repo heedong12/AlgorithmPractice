@@ -1,8 +1,6 @@
 function solution(n, works) {
     var answer = 0;
-    works.sort(function(a,b) {
-        return b-a;
-    });
+    works.sort((a,b) => b-a);
     
     while(n) {
         let max = works[0]; // 가장 큰 값
@@ -16,7 +14,7 @@ function solution(n, works) {
     }
     
     works.map((item)=>{
-        if(item < 0) item = 0;
+        if(item < 0) return;
         answer += Math.pow(Number(item), 2);
     })
     
