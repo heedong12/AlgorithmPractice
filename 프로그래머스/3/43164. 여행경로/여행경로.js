@@ -4,8 +4,6 @@ function solution(tickets) {
     let sortedTickets = tickets.sort();
     let len = sortedTickets.length;
     
-    let r = []
-
     answer.push("ICN");
     const DFS = (str) => {    
         if(answer.length === len+1) return;
