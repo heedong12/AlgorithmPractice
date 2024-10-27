@@ -1,39 +1,17 @@
 const filePath = process.platform === "linux" ? "/dev/stdin" : "ex.txt";
 
-const input = require("fs")
+const [N, arr1, M, arr2] = require("fs")
   .readFileSync(filePath)
   .toString()
   .trim()
   .split("\n");
 
-var [N, arr1, M, arr2] = input;
-arr1 = arr1.split(" ").map(Number);
-arr1.sort((a, b) => {
-  return a - b;
+const set = new Set(arr1.split(" ").map(Number));
+const arr = arr2.split(" ").map(Number);
+
+const result = [];
+arr.forEach((item) => {
+  set.has(item) ? result.push(1) : result.push(0);
 });
-arr2 = arr2.split(" ").map(Number);
 
-const binarySearch = (target, arr) => {
-  var start = 0;
-  var end = N - 1;
-  var mid;
-
-  while (start <= end) {
-    mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-      return 1;
-    } else {
-      if (arr[mid] > target) {
-        end = mid - 1;
-      } else {
-        start = mid + 1;
-      }
-    }
-  }
-  return 0;
-};
-
-arr2.forEach((item, idx) => {
-  console.log(binarySearch(item, arr1));
-});
+console.log(result.join("\n"));
