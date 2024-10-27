@@ -13,10 +13,7 @@ let end = Math.max(...B);
 let mid = Math.floor((start + end) / 2); //길이
 
 while (start <= end) {
-  let count = 0;
-  B.forEach((item) => {
-    count += Math.floor(item / mid);
-  });
+  let count = B.reduce((acc, cur) => acc + Math.floor(cur / mid), 0);
 
   if (count === N) {
     break;
