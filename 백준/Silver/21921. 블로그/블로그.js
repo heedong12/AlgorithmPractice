@@ -5,27 +5,24 @@ const input = require("fs")
   .split("\n");
 const [N, X] = input[0].split(" ").map(Number);
 const visitNum = input[1].split(" ").map(Number);
-let maxNum = [];
-
-let start = 0;
-let end = start + X - 1;
 
 let sum = 0;
-for (let i = 0; i <= end; i++) {
-  sum += Number(visitNum[i]);
-}
-maxNum.push(sum);
-start++;
-end++;
-
-while (end < N) {
-  maxNum.push(maxNum[start - 1] - visitNum[start - 1] + visitNum[end]);
-  start++;
-  end++;
+for (let i = 0; i < X; i++) {
+  sum += visitNum[i];
 }
 
-let count = 0;
-let max = Math.max(...maxNum);
-maxNum.filter((item) => (item === max ? count++ : ""));
+let max = sum;
+let count = 1;
 
-console.log(max === 0 ? "SAD" : max + "\n" + count);
+for (let i = X; i < N; i++) {
+  sum += visitNum[i] - visitNum[i - X];
+
+  if (sum > max) {
+    max = sum;
+    count = 1;
+  } else if (sum === max) {
+    count++;
+  }
+}
+
+console.log(max === 0 ? "SAD" : [max, count].join("\n"));
