@@ -1,4 +1,7 @@
 function solution(lottos, win_nums) {
+    
+//     const min = lottos.filter(n => win_nums.includes(n)).length;
+//     const max = lottos.filter(n => n === 0).length + min;
     var answer = new Array(2)
     let zeroNum = 0
     let lowScore = 7
