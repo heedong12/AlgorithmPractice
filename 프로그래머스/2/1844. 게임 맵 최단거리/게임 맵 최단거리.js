@@ -1,33 +1,39 @@
 function solution(maps) {
-  const rows = maps.length;
-  const cols = maps[0].length;
+    var answer = 0;
+    const n = maps[0].length    // 열 -> x
+    const m = maps.length       // 행 -> y
 
-  //순서대로 상우하좌(시계방향)
-  const dx = [0, 1, 0, -1];
-  const dy = [-1, 0, 1, 0];
-
-  const queue = [];
-  queue.push([0, 0, 1]);
-
-  while (queue.length > 0) {
-    const [x, y, distance] = queue.shift();
-
-    //도착지점 도착
-    if (x === cols - 1 && y === rows - 1) {
-      return distance;
+    // const visited = new Array(m).fill(false).map(_ => new Array(n).fill(false))
+    const visited = Array.from({length:m}, ()=> Array(n).fill(false))
+    const checkXY = (x,y) => {
+        if(x<0 || x>=n || y<0 || y>=m || visited[y][x] || maps[y][x]===0) return false;
+        return true;
     }
+        
+    const move = [[-1,0],[1,0],[0,-1],[0,1]]
+    
+    const bfs = () => {
+        let queue = [[0,0,1]]   // x, y, count
+        visited[0][0]=true
+        
+        while(queue.length > 0){
+            let [x,y,count] = queue.shift();
+            
+            if(x === n-1 && y === m-1) return count
+            
+            for(const [dx,dy] of move){
+                let nx = dx+x
+                let ny = dy+y
+                
+                if(checkXY(nx,ny)){
+                    visited[ny][nx]=true
+                    queue.push([nx, ny, count+1])
+                }
+            } 
+        }
 
-    for (let i = 0; i < 4; i++) {
-      const nx = x + dx[i];
-      const ny = y + dy[i];
-
-      //좌표의 위치가 범위안에 있고, 벽이 없는 자리 일때(=1)
-      if (nx >= 0 && nx < cols && ny >= 0 && ny < rows && maps[ny][nx] == 1) {
-        queue.push([nx, ny, distance + 1]);
-        maps[ny][nx] = 0;
-      }
+        return -1;
     }
-  }
-  //도착할 수 없는 경우
-  return -1;
+    
+    return bfs();
 }
