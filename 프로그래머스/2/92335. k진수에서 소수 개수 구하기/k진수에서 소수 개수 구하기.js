@@ -1,28 +1,11 @@
 function solution(n, k) {
     const isPrime = (p) => {
-        if(p==1) return false
-        let num = 0
+        if(p==1 || !p) return false;
         for(let i=2;i<=Math.sqrt(p);i++){
-           if(p % i === 0) {
-               num++;
-               break;
-           }
+           if(p % i === 0) return false;
         }
-        return num===0;
-    }
-    
-    const changeToK = () =>{
-        let number = ""
-        while(n>0){
-            number+=n%k
-            n= Math.floor(n/k)
-        }
-        return number.split("").reverse().join("");
+        return true;
     }
 
-    let digitNum = changeToK().split("0").filter((item)=> item && !item.includes(0) && isPrime(item))
-    
-
-    return digitNum.length;
-    
+    return n.toString(k).split("0").filter((item)=> isPrime(item)).length;
 }
