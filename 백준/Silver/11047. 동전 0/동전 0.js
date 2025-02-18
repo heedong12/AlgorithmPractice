@@ -4,15 +4,16 @@ const [nums, ...inputs] = require("fs")
   .trim()
   .split("\n");
 
-let [N, K] = nums.split(" ");
-let count = 0;
+let K = nums.split(" ").map(Number)[1];
+const coins = inputs.reverse().filter((coin) => coin <= K);
 
-for (let coin of inputs.reverse()) {
-  let coinNum = Math.floor(K / coin);
-  if (coinNum > 0) {
-    K -= coinNum * coin;
-    count += coinNum;
+const count = coins.reduce((acc, cur) => {
+  let coinCount = Math.floor(K / cur);
+  if (coinCount > 0) {
+    acc += coinCount;
+    K -= cur * coinCount;
   }
-}
+  return acc;
+}, 0);
 
 console.log(count);
