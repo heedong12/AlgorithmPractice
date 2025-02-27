@@ -1,28 +1,22 @@
-const readFileSyncAddress = '/dev/stdin'    //제출시 활성화
-const fs = require("fs");
-//T에 테스트 케이스, 나머지는 input 배열에 할당
-const input = fs
-  .readFileSync(readFileSyncAddress)
+const [N, ...inputs] = require("fs")
+  .readFileSync(process.platform === "linux" ? "/dev/stdin" : "input.txt")
   .toString()
-  .split("\n")
-  .map((line) => line.trim());
+  .trim()
+  .split("\n");
 
-for (let i = 1; i < input.length; i++) {
-  if (!isNaN(parseInt(input[i]))) {
-    let clothes = new Map();
+const answer = [];
 
-    for (let j = 1; j <= input[i]; j++) {
-      let [_, key] = input[i + j].split(" ");
-      if (clothes.has(key)) {
-        clothes.set(key, clothes.get(key) + 1);
-      } else {
-        clothes.set(key, 1);
-      }
-    }
-    let sum = 1;
-    for (let value of clothes.values()) {
-      sum = sum * (value + 1);
-    }
-    console.log(sum - 1);
+for (let i = 0; i < inputs.length; i++) {
+  let testNum = inputs[i];
+  let map = new Map();
+  for (let j = i + 1; j <= i + Number(testNum); j++) {
+    let [_, type] = inputs[j].split(" ");
+    map.set(type, (map.get(type) || 0) + 1);
   }
+  let sum = 1;
+  map.forEach((item) => (sum *= Number(item) + 1));
+  answer.push(sum - 1);
+  i += Number(testNum);
 }
+
+console.log(answer.join("\n"));
