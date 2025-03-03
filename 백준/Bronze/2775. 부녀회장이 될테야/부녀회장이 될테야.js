@@ -6,6 +6,7 @@ const [T, ...inputs] = require("fs")
   .map(Number);
 
 const dp = Array.from({ length: 15 }, () => new Array(15));
+const answer = [];
 
 for (let j = 0; j < dp.length; j++) {
   for (let k = 0; k < dp[0].length; k++) {
@@ -19,5 +20,7 @@ for (let i = 0; i < inputs.length; i = i + 2) {
   let K = inputs[i];
   let N = inputs[i + 1];
 
-  console.log(dp[K][N]);
+  answer.push(dp[K][N]);
 }
+
+console.log(answer.join("\n"));
