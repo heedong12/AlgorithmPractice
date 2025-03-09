@@ -14,7 +14,7 @@ loop: for (let i = 0; i < inputs.length; i++) {
     break loop;
   }
   for (let j = i + 1; j < inputs.length; j++) {
-    if (inputs[j].includes(inputs[i]) || inputs[j].includes(reverse)) {
+    if (inputs[j].includes(reverse)) {
       answer = inputs[i];
       break loop;
     }
