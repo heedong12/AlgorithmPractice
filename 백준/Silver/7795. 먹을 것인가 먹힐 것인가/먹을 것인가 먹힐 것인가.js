@@ -15,15 +15,20 @@ for (let i = 0; i < inputs.length; i = i + 3) {
     .map(Number)
     .sort((a, b) => a - b);
 
-  let idx = 0;
   let count = 0;
+  A.forEach((item) => {
+    let start = 0;
+    let end = M - 1;
 
-  for (let j = 0; j < N; j++) {
-    while (idx < M) {
-      if (A[j] > B[idx]) idx++;
-      else break;
+    while (start <= end) {
+      let mid = Math.floor((start + end) / 2);
+      if (B[mid] < item) {
+        start = mid + 1;
+      } else {
+        end = mid - 1;
+      }
     }
-    count += idx;
-  }
+    count += start;
+  });
   console.log(count);
 }
