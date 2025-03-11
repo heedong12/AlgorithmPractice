@@ -4,6 +4,7 @@ const [T, ...inputs] = require("fs")
   .trim()
   .split("\n");
 
+const answer = [];
 for (let i = 0; i < inputs.length; i = i + 3) {
   let [N, M] = inputs[i].split(" ").map(Number);
   let A = inputs[i + 1]
@@ -30,5 +31,7 @@ for (let i = 0; i < inputs.length; i = i + 3) {
     }
     count += start;
   });
-  console.log(count);
+  answer.push(count);
 }
+
+console.log(answer.join("\n"));
