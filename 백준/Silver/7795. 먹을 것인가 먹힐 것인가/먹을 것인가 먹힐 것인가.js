@@ -10,7 +10,6 @@ for (let i = 0; i < inputs.length; i = i + 3) {
   let A = inputs[i + 1]
     .split(" ")
     .map(Number)
-    .sort((a, b) => a - b);
   let B = inputs[i + 2]
     .split(" ")
     .map(Number)
