@@ -8,26 +8,15 @@ arr = arr.split(" ").map(Number);
 
 let start = 0;
 let end = 0;
-let sum = arr[0];
+let sum = 0;
 let count = 0;
 
-while (start <= end && start < N && end < N) {
-  if (sum < M) {
-    end++;
-    sum += arr[end];
-  } else if (sum > M) {
-    if (start === end && end + 1 < N) {
-      end++;
-      sum += arr[end];
-    } else {
-      sum -= arr[start];
-      start++;
-    }
-  } else if (sum === M) {
-    count++;
-    end++;
-    sum += arr[end];
+while (end < N) {
+  sum += arr[end++];
+  while (sum > M) {
+    sum -= arr[start++];
   }
+  if (sum === M) count++;
 }
 
 console.log(count);
