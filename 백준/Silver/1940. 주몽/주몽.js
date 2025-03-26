@@ -7,23 +7,18 @@ let [N, M, nums] = require("fs")
 N = Number(N);
 M = Number(M);
 
-nums = nums
-  .split(" ")
-  .map(Number)
-  .sort((a, b) => a - b);
+const set = new Set(nums.split(" ").map(Number));
 
-let start = 0;
-let end = N - 1;
 let count = 0;
 
-while (start < end && end < N) {
-  let sum = nums[start] + nums[end];
+for (let num of set) {
+  let target = M - num;
 
-  if (sum === M) {
+  if (set.has(target) && num !== target) {
     count++;
-    start++;
-    end--;
-  } else if (sum > M) end--;
-  else if (sum < M) start++;
+    set.delete(num);
+    set.delete(target);
+  }
 }
+
 console.log(count);
