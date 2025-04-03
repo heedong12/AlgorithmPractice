@@ -16,12 +16,12 @@ const dir = [
 ];
 
 const dfs = (x, y) => {
-  const stack = [[x, y]];
+  const queue = [[x, y]];
   isVisited[y][x] = true;
   let count = 1;
 
-  while (stack.length > 0) {
-    let [dx, dy] = stack.pop();
+  while (queue.length > 0) {
+    let [dx, dy] = queue.shift();
 
     for (let d of dir) {
       let nx = dx + d[0];
@@ -35,7 +35,7 @@ const dfs = (x, y) => {
         !isVisited[ny][nx] &&
         maps[ny][nx] === 1
       ) {
-        stack.push([nx, ny]);
+        queue.push([nx, ny]);
         isVisited[ny][nx] = true;
         count++;
       }
