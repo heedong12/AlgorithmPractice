@@ -7,14 +7,28 @@ let [N, nums] = require("fs")
 N = Number(N);
 nums = nums.split(" ").map(Number);
 
-const dp = new Array(N).fill(1);
+let answer = [nums[0]];
 
-for (let i = 0; i < N; i++) {
-  for (let j = 0; j < i; j++) {
-    if (nums[i] > nums[j]) {
-      dp[i] = Math.max(dp[i], dp[j] + 1);
+const findIndex = (target) => {
+  let start = 0;
+  let end = answer.length;
+
+  while (start < end) {
+    let mid = Math.floor((start + end) / 2);
+    if (target > answer[mid]) {
+      start = mid + 1;
+    } else {
+      end = mid;
     }
   }
+
+  return end;
+};
+
+for (let i = 1; i < N; i++) {
+  if (answer[answer.length - 1] < nums[i]) answer.push(nums[i]);
+  else if (answer[answer.length - 1] > nums[i])
+    answer[findIndex(nums[i])] = nums[i];
 }
 
-console.log(Math.max(...dp));
+console.log(answer.length);
