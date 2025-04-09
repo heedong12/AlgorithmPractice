@@ -1,29 +1,29 @@
-const filePath = process.platform === "linux" ? "/dev/stdin" : "ex.txt";
-
-const [A, ...B] = require("fs")
-  .readFileSync(filePath)
+let [NK, ...nums] = require("fs")
+  .readFileSync(process.platform === "linux" ? "/dev/stdin" : "input.txt")
   .toString()
   .trim()
   .split("\n");
 
-const [K, N] = A.split(" ");
+const [N, K] = NK.split(" ").map(Number);
+nums = nums.map(Number);
 
-let start = 1;
-let end = Math.max(...B);
-let mid = Math.floor((start + end) / 2); //길이
+let start = 0;
+let end = Math.max(...nums);
+let maxLen = 0;
 
 while (start <= end) {
-  let count = B.reduce((acc, cur) => acc + Math.floor(cur / mid), 0);
-
-  if (count === N) {
-    break;
+  let mid = Math.floor((start + end) / 2);
+  let count = 0;
+  for (let i = 0; i < nums.length; i++) {
+    count += Math.floor(nums[i] / mid);
   }
-  if (count < N) {
+
+  if (count < K) {
     end = mid - 1;
   } else {
+    maxLen = Math.max(maxLen, mid);
     start = mid + 1;
   }
-  mid = Math.floor((start + end) / 2);
 }
 
-console.log(mid);
+console.log(maxLen);
