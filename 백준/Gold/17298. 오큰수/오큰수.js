@@ -1,9 +1,8 @@
-let [N, nums] = require("fs")
+let [_, nums] = require("fs")
   .readFileSync(process.platform === "linux" ? "/dev/stdin" : "./input.txt")
   .toString()
   .trim()
   .split("\n");
-N = Number(N);
 nums = nums.split(" ").map(Number).reverse();
 const answers = [];
 const stack = [];
