@@ -4,101 +4,75 @@ let [NMK, ...infos] = require("fs")
   .trim()
   .split("\n");
 
-// 행, 열
 const Directions = [
-  [-1, 0],
-  [-1, 1],
-  [0, 1],
-  [1, 1],
-  [1, 0],
-  [1, -1],
-  [0, -1],
-  [-1, -1],
+  [-1, 0], [-1, 1], [0, 1], [1, 1],
+  [1, 0], [1, -1], [0, -1], [-1, -1],
 ];
+
 const [N, _, K] = NMK.split(" ").map(Number);
-let maps = new Map();
 
-// 좌표 계산
+// 초기 파이어볼 리스트
+let fireballs = infos.map((line) => {
+  const [r, c, m, s, d] = line.split(" ").map(Number);
+  return { r: r - 1, c: c - 1, m, s, d };
+});
+
+// wrap-around 계산 그대로 유지
 const calcRC = (r, c, s, d) => {
-  let [nr, nc] = [r + Directions[d][0] * s, c + Directions[d][1] * s];
-  nr = ((nr % N) + N) % N;
-  nc = ((nc % N) + N) % N;
-
+  let [dr, dc] = Directions[d];
+  let nr = ((r + dr * s) % N + N) % N;
+  let nc = ((c + dc * s) % N + N) % N;
   return [nr, nc];
 };
 
-for (let info of infos) {
-  let [r, c, m, s, d] = info.split(" ").map(Number);
-  maps.set(`${r - 1},${c - 1}`, [[m, s, d]]);
-}
-
 for (let i = 0; i < K; i++) {
-  let newMap = new Map();
+  // 2차원 배열 map 초기화
+  let map = Array.from({ length: N }, () => Array.from({ length: N }, () => []));
 
-  // 파이어볼 이동
-  maps.forEach((value, key) => {
-    let [r, c] = key.split(",").map(Number);
+  // 1. 파이어볼 이동
+  for (const fb of fireballs) {
+    const [nr, nc] = calcRC(fb.r, fb.c, fb.s, fb.d);
+    map[nr][nc].push({ r: nr, c: nc, m: fb.m, s: fb.s, d: fb.d });
+  }
 
-    value.map((item) => {
-      let [m, s, d] = item;
-      let [nr, nc] = calcRC(r, c, s, d);
-      if (!newMap.has(`${nr},${nc}`)) {
-        newMap.set(`${nr},${nc}`, [[m, s, d]]);
-      } else {
-        newMap.get(`${nr},${nc}`).push([m, s, d]);
+  // 2. 이동 후 처리
+  fireballs = [];
+
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      const cell = map[r][c];
+      const len = cell.length;
+
+      if (len === 0) continue;
+
+      if (len === 1) {
+        fireballs.push(cell[0]);
+        continue;
       }
-    });
-  });
 
-  maps.clear();
+      let totalM = 0, totalS = 0;
+      let isEven = true, isOdd = true;
 
-  // 파이어 볼 이동 후 처리
-  newMap.forEach((value, key) => {
-    // 2개 이상의 파이어볼이 존재
-    if (value.length > 1) {
-      let totalM = 0;
-      let totalS = 0;
-      let isEven = true;
-      let isOdd = true;
-
-      for (let v of value) {
-        let m = v[0];
-        let s = v[1];
-        let d = v[2];
-
+      for (const { m, s, d } of cell) {
         totalM += m;
         totalS += s;
-        if (d % 2 != 0) {
-          isEven = false;
-        } else {
-          isOdd = false;
-        }
+        if (d % 2 === 0) isOdd = false;
+        else isEven = false;
       }
-      totalM = Math.floor(totalM / 5);
-      totalS = Math.floor(totalS / value.length);
 
-      if (totalM === 0) return;
-      let startDir = isEven || isOdd ? 0 : 1;
+      const newM = Math.floor(totalM / 5);
+      if (newM === 0) continue;
 
-      for (let j = startDir; j < 8; j += 2) {
-        if (!maps.has(key)) {
-          maps.set(key, [[totalM, totalS, j]]);
-        } else {
-          maps.get(key).push([totalM, totalS, j]);
-        }
+      const newS = Math.floor(totalS / len);
+      const dirs = (isEven || isOdd) ? [0, 2, 4, 6] : [1, 3, 5, 7];
+
+      for (const d of dirs) {
+        fireballs.push({ r, c, m: newM, s: newS, d });
       }
-    } else {
-      maps.set(key, value);
     }
-  });
+  }
 }
 
-let answer = 0;
-
-maps.forEach((map, key) => {
-  map.forEach((item) => {
-    answer += item[0];
-  });
-});
-
+// 결과 계산
+let answer = fireballs.reduce((sum, fb) => sum + fb.m, 0);
 console.log(answer);
