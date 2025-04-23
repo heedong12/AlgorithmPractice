@@ -14,6 +14,8 @@ const directions = [
   [0, -1],
   [0, 1],
 ];
+
+// 바이러스 확산
 const BFS = (x, y, arr) => {
   let queue = [[x, y]];
 
@@ -22,12 +24,24 @@ const BFS = (x, y, arr) => {
 
     for (let d of directions) {
       let [nx, ny] = [cx + d[0], cy + d[1]];
-      if (nx >= 0 && nx < N && ny >= 0 && ny < M && arr[nx][ny] === 0) {
+      if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+      if (arr[nx][ny] === 0) {
         arr[nx][ny] = 2;
         queue.push([nx, ny]);
       }
     }
   }
+};
+
+// 안전 영역 계산
+const getSafeZone = (arr) => {
+  let total = 0;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (arr[i][j] === 0) total++;
+    }
+  }
+  return total;
 };
 
 const DFS = (count) => {
@@ -42,15 +56,8 @@ const DFS = (count) => {
         }
       }
     }
-    // 안전한 영역 세기
-    let total = 0;
-    for (let i = 0; i < N; i++) {
-      for (let j = 0; j < M; j++) {
-        if (arr[i][j] === 0) total++;
-      }
-    }
 
-    return (max = Math.max(max, total));
+    return (max = Math.max(max, getSafeZone(arr)));
   }
 
   for (let i = 0; i < N; i++) {
