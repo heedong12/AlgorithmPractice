@@ -15,61 +15,86 @@ const directions = [
   [0, 1],
 ];
 
-// 바이러스 확산
-const BFS = (x, y, arr) => {
-  let queue = [[x, y]];
+const BFS = (startPoints, currentMap) => {
+  const queue = [...startPoints];
+  const visited = Array.from(Array(N), () => Array(M).fill(false));
+  queue.forEach(([x, y]) => (visited[x][y] = true));
 
   while (queue.length > 0) {
-    let [cx, cy] = queue.shift();
+    const [cx, cy] = queue.shift();
 
-    for (let d of directions) {
-      let [nx, ny] = [cx + d[0], cy + d[1]];
-      if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
-      if (arr[nx][ny] === 0) {
-        arr[nx][ny] = 2;
+    for (const [dx, dy] of directions) {
+      const nx = cx + dx;
+      const ny = cy + dy;
+
+      if (nx >= 0 && nx < N && ny >= 0 && ny < M && !visited[nx][ny] && currentMap[nx][ny] === 0) {
+        currentMap[nx][ny] = 2;
+        visited[nx][ny] = true;
         queue.push([nx, ny]);
       }
     }
   }
-};
 
-// 안전 영역 계산
-const getSafeZone = (arr) => {
-  let total = 0;
+  let safeZone = 0;
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < M; j++) {
-      if (arr[i][j] === 0) total++;
-    }
-  }
-  return total;
-};
-
-const DFS = (count) => {
-  if (count === 3) {
-    let arr = maps.map((item) => [...item]);
-
-    // 바이러스 확산
-    for (let i = 0; i < N; i++) {
-      for (let j = 0; j < M; j++) {
-        if (arr[i][j] === 2) {
-          BFS(i, j, arr);
-        }
-      }
-    }
-
-    return (max = Math.max(max, getSafeZone(arr)));
-  }
-
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < M; j++) {
-      if (maps[i][j] === 0) {
-        maps[i][j] = 1;
-        DFS(count + 1);
-        maps[i][j] = 0;
+      if (currentMap[i][j] === 0) {
+        safeZone++;
       }
     }
   }
+  return safeZone;
 };
 
-DFS(0);
+const getZeroCoordinates = (currentMap) => {
+  const zeros = [];
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (currentMap[i][j] === 0) {
+        zeros.push([i, j]);
+      }
+    }
+  }
+  return zeros;
+};
+
+const getVirusCoordinates = (currentMap) => {
+  const viruses = [];
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < M; j++) {
+      if (currentMap[i][j] === 2) {
+        viruses.push([i, j]);
+      }
+    }
+  }
+  return viruses;
+};
+
+const combinations = (arr, selectNumber) => {
+  const results = [];
+  if (selectNumber === 1) {
+    return arr.map((element) => [element]);
+  }
+  arr.forEach((fixed, index, origin) => {
+    const rest = origin.slice(index + 1);
+    const smallerCombinations = combinations(rest, selectNumber - 1);
+    const attached = smallerCombinations.map((combination) => [fixed, ...combination]);
+    results.push(...attached);
+  });
+  return results;
+};
+
+const zeroCoordinates = getZeroCoordinates(maps);
+const wallCombinations = combinations(zeroCoordinates, 3);
+const initialVirusCoordinates = getVirusCoordinates(maps);
+
+for (const walls of wallCombinations) {
+  const tempMap = maps.map((row) => [...row]);
+  walls.forEach(([wx, wy]) => {
+    tempMap[wx][wy] = 1;
+  });
+
+  max = Math.max(max, BFS(initialVirusCoordinates, tempMap));
+}
+
 console.log(max);
