@@ -7,31 +7,28 @@ let [Ndkc, ...sushis] = require("fs")
 let [N, d, k, c] = Ndkc.split(" ").map(Number);
 sushis = sushis.map(Number);
 
-let start = 0;
-let end = k;
-let map = new Map();
+let check = new Array(d + 1).fill(0);
+let cnt = 0;
 
 for (let i = 0; i < k; i++) {
-  map.set(sushis[i], (map.get(sushis[i]) ?? 0) + 1);
+  if (check[sushis[i]] === 0) cnt++;
+  check[sushis[i]] += 1;
 }
-map.set(c, (map.get(c) ?? 0) + 1);
 
-let max = map.size;
+if (check[c] === 0) cnt++;
+check[c]++;
+let max = cnt;
 
-while (start < N) {
-  // 첫번째꺼 제거
-  let startTarget = start % N;
-  if (map.has(sushis[startTarget])) {
-    if (map.get(sushis[startTarget]) === 1) map.delete(sushis[startTarget]);
-    else map.set(sushis[startTarget], map.get(sushis[startTarget]) - 1);
-  }
-  // 마지막 추가
-  let endTarget = end % N;
-  map.set(sushis[endTarget], (map.get(sushis[endTarget]) ?? 0) + 1);
+for (let i = 0; i < N; i++) {
+  let startTarget = sushis[i % N];
+  check[startTarget]--;
+  if (check[startTarget] === 0) cnt--;
 
-  max = Math.max(map.size, max);
-  start++;
-  end++;
+  let endTarget = sushis[(i + k) % N];
+  if (check[endTarget] === 0) cnt++;
+  check[endTarget]++;
+
+  max = Math.max(max, cnt);
 }
 
 console.log(max);
