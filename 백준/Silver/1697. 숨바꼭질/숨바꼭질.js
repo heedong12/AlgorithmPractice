@@ -8,9 +8,10 @@ let [N, K] = require("fs")
 let visited = new Array(100001).fill(false);
 const bfs = (cur) => {
   let queue = [[cur, 0]];
+  let idx = 0;
   visited[cur] = true;
   while (queue.length > 0) {
-    let [curNum, count] = queue.shift();
+    let [curNum, count] = queue[idx++];
 
     if (curNum === K) return count;
 
